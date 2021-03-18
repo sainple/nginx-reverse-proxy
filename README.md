@@ -1,4 +1,7 @@
-# Architecture Nginx-reverse-proxy for multi containers
+# Architecture Nginx reverse proxy for multi containers
+
+> 
+todo: do the https and letsencrypt
 
 ![Contribution guidelines for this project](doc/schema.svg)
 
