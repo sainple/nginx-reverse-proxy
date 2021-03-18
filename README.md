@@ -24,10 +24,10 @@ Ajoutez le site web du projet, exemple `local.example.com`
 ::1             localhost
 fe80::1%lo0     localhost
 
-# My Docker projects
+# My Dockers projects
 127.0.0.1  local.example.com
 ````
-### 2 Configurez le `docker-compose` du projet web pour `Nginx`
+### 2 Configurez le `docker-compose` de votre projet web pour `Nginx`
 
 Editer les variables d'environnement. Ajoutez également le lien du réseau Nginx.
 `NGINX_HOST=local.example.com` est l'exemple de la documentation.
@@ -53,10 +53,10 @@ networks:
 
 Env | require/optional | default | example
 ------------ | ------------- | ------------- | -------------
-NGINX_HOST               | require  | `null` | `example.com`
-NGINX_SET_HEADER         | optional | `null` | `WWW-Authorization 'Basic 123456789',Authorization 'Basic 123456789'`
-NGINX_CONNECTION_TIMEOUT | optional  | `60` | `600`
-NGINX_PORT | optional  | `80` | `8080`
+NGINX_HOST               | require   | `null` | `example.com`
+NGINX_SET_HEADER         | optional  | `null` | `WWW-Authorization 'Basic 123456789',Authorization 'Basic 123456789'`
+NGINX_CONNECTION_TIMEOUT | optional  | `60`   | `600`
+NGINX_PORT               | optional  | `80`   | `8080`
 
 ### 3 Lancez votre docker
 
