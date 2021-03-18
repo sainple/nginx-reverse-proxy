@@ -168,19 +168,17 @@ server {
 {{ $is_regexp := hasPrefix "~" $host }}
 {{ $upstream_name := when $is_regexp (sha1 $host) $host }}
 
-# {{ $host }}
-upstream {{ $upstream_name }} {
-    server 127.0.0.1 down;
-}
 
 {{ range $container := $containers }}
 {{ range $containerNetwork := $container.Networks }}
+# host {{ $host }}
+upstream  {{ $container.Name }} { server {{ $containerNetwork.IP }}:{{ if $container.Env.NGINX_PORT }}{{ $container.Env.NGINX_PORT }}{{ else }}80{{ end }}; }
 server {
     listen 80;
     server_name {{ $host }};
 
     location / {
-        proxy_pass              http://{{ $containerNetwork.IP }}:{{ if $container.Env.NGINX_PORT }}{{ $container.Env.NGINX_PORT }}{{ else }}80{{ end }};
+        proxy_pass              http://{{ $container.Name }};
         proxy_redirect          off;
         proxy_set_header        Host $host;
         proxy_set_header        X-Real-IP $remote_addr;
