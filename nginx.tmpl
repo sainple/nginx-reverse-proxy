@@ -163,10 +163,16 @@ server {
 }
 {{ end }}
 
-{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+{{ range $host, $containers := groupByMulti $ "Env.NGINX_HOST" "," }}
 {{ $host := trim $host }}
+{{ $is_regexp := hasPrefix "~" $host }}
+{{ $upstream_name := when $is_regexp (sha1 $host) $host }}
 
 # {{ $host }}
+upstream {{ $upstream_name }} {
+    server 127.0.0.1 down;
+}
+
 {{ range $container := $containers }}
 {{ range $containerNetwork := $container.Networks }}
 server {
@@ -174,29 +180,32 @@ server {
     server_name {{ $host }};
 
     location / {
-        proxy_pass              http://{{ $containerNetwork.IP }}:{{ $container.Env.VIRTUAL_PORT }};
+        proxy_pass              http://{{ $containerNetwork.IP }}:{{ if $container.Env.NGINX_PORT }}{{ $container.Env.NGINX_PORT }}{{ else }}80{{ end }};
         proxy_redirect          off;
         proxy_set_header        Host $host;
         proxy_set_header        X-Real-IP $remote_addr;
         proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header        X-Forwarded-Host $server_name;
+
         {{ if $container.Env.VIRTUAL_SET_HEADER }}
         # custom
-        {{ $set_herders := split $container.Env.VIRTUAL_SET_HEADER "," }}
+        {{ $set_herders := split $container.Env.NGINX_SET_HEADER "," }}
         {{ range $set_herder := $set_herders }}
         proxy_set_header        {{ $set_herder }};
         {{ end }}
         {{ end }}
+
         {{ if $container.Env.VIRTUAL_PASS_HEADER }}
         # custom
-        {{ $pass_herders := split $container.Env.VIRTUAL_PASS_HEADER "," }}
+        {{ $pass_herders := split $container.Env.NGINX_PASS_HEADER "," }}
         {{ range $pass_herder := $pass_herders }}
         proxy_pass_header       {{ $pass_herder }};
         {{ end }}
         {{ end }}
-        {{ if $container.Env.VIRTUAL_CONNECTION_TIMEOUT }}
+
+        {{ if $container.Env.NGINX_CONNECTION_TIMEOUT }}
         # custom
-        proxy_connect_timeout   {{ $container.Env.VIRTUAL_CONNECTION_TIMEOUT }};
+        proxy_connect_timeout   {{ $container.Env.NGINX_CONNECTION_TIMEOUT }};
         {{ else }}
         proxy_connect_timeout   60;
         {{ end }}
