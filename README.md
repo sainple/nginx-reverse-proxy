@@ -2,15 +2,15 @@
 
 ![Contribution guidelines for this project](doc/schema.svg)
 
-### 1 Editez vos hosts
+### 1 Edit your hosts
 
-Ouvrez votre fichier `hosts`
+Open your file `hosts`
 
 ````
 sudo nano /etc/hosts
 ````
 
-Ajoutez le site web du projet, exemple `local.example.com`
+Add the project website, example `local.example.com`
 
 ````
 ##
@@ -27,10 +27,10 @@ fe80::1%lo0     localhost
 # My Dockers projects
 127.0.0.1  local.example.com
 ````
-### 2 Configurez le `docker-compose` de votre projet web pour `Nginx`
+### 2 Configure the `docker-compose` of your web project for` Nginx`
 
-Editer les variables d'environnement. Ajoutez également le lien du réseau Nginx.
-`NGINX_HOST=local.example.com` est l'exemple de la documentation.
+Edit environment variables. Also add the link of the Nginx network.
+`NGINX_HOST = local.example.com` is the example of the documentation.
 
 ````
 services:
@@ -58,13 +58,13 @@ NGINX_SET_HEADER         | optional  | `null` | `WWW-Authorization 'Basic 123456
 NGINX_CONNECTION_TIMEOUT | optional  | `60`   | `600`
 NGINX_PORT               | optional  | `80`   | `8080`
 
-### 3 Lancez votre docker
+### 3 Launch your docker
 
 ````
 docker-compose up -d
 ````
 
-Dans le fichier `default.conf` vous devriez avoir cela
+In the `default.conf` file you should have this
 
 ````
 # host local.exemple.com
@@ -90,4 +90,4 @@ server {
 
 # Hello world !
 
-Rendez-vous dans votre navigateur préféré et ouvrez l'url `http://local.exemple.com`. !
+Go to your favorite browser and open the url `http://local.exemple.com`. !
