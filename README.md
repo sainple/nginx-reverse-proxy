@@ -29,28 +29,16 @@ fe80::1%lo0     localhost
 ````
 ### 2 Ajouter votre configuration au proxy `Nginx`
 
-Le serveur proxy `Nginx` tourne sur le port `80`. Celui-ci contact vos projets web Docker.
-Exemple de configuration `Nginx`. Créer votre configuration dans le dossier `conf.d` du Docker `reverse proxy` de `Nginx`. 
+Editer votre docker-config avec les variables d'environnement 
 
 ````
-server {
-    listen        80;
-    server_name   local.exemple.com;
-    
-    location / {
-    proxy_pass              http://172.20.0.9:80;
-    proxy_redirect          off;
-    proxy_set_header        Host $host;
-    proxy_set_header        X-Real-IP $remote_addr;
-    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header        X-Forwarded-Host $server_name;
-    proxy_connect_timeout   60;
-    }
-}
-````
+services:
 
-### 3 Relancer votre service Nginx après l'ajout d'une nouvelle configuration
-
-````
-docker exec nginx nginx -s reload
+  webapp:
+    environment:
+      # indispensable
+      - "NGINX_HOST=local.exemple.com"
+      # optionnel
+      - "NGINX_SET_HEADER=WWW-Authorization 'Basic ZWxhc3RpYzplbGFzdGlj',Authorization 'Basic ZWxhc3RpYzplbGFzdGlj'"
+      - "NGINX_CONNECTION_TIMEOUT=5"
 ````
