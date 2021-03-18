@@ -67,7 +67,7 @@ NGINX_PORT               | optional  | `80`   | `8080`
 docker-compose up -d
 ````
 
-In the `default.conf` file you should have this
+In the `conf.d/default.conf` file you should have this
 
 ````
 # host local.exemple.com
