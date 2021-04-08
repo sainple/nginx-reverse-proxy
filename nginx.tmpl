@@ -177,6 +177,14 @@ server {
     listen 80;
     server_name {{ $host }};
 
+    {{ if $container.Env.NGINX_ADD_HEADER }}
+    # custom
+    {{ $add_herders := split $container.Env.NGINX_ADD_HEADER "|" }}
+    {{ range $add_herder := $add_herders }}
+    add_header        {{ $add_herder }};
+    {{ end }}
+    {{ end }}
+
     location / {
         proxy_pass              http://{{ $container.Name }};
         proxy_redirect          off;
@@ -185,17 +193,9 @@ server {
         proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header        X-Forwarded-Host $server_name;
 
-        {{ if $container.Env.NGINX_SET_HEADER }}
+        {{ if $container.Env.NGINX_PASS_HEADER }}
         # custom
-        {{ $set_herders := split $container.Env.NGINX_SET_HEADER "," }}
-        {{ range $set_herder := $set_herders }}
-        proxy_set_header        {{ $set_herder }};
-        {{ end }}
-        {{ end }}
-
-        {{ if $container.Env.VIRTUAL_PASS_HEADER }}
-        # custom
-        {{ $pass_herders := split $container.Env.NGINX_PASS_HEADER "," }}
+        {{ $pass_herders := split $container.Env.NGINX_PASS_HEADER "|" }}
         {{ range $pass_herder := $pass_herders }}
         proxy_pass_header       {{ $pass_herder }};
         {{ end }}
